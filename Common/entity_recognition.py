@@ -73,5 +73,5 @@ def extract_information(trans_text):
 
     return json_data
 
-output = extract_information(trans_text)
+# output = extract_information(trans_text)
 # print(output)
