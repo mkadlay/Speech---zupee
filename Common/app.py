@@ -20,7 +20,7 @@ def load_api():
 
 app1 = Flask(__name__)
 
-@app1.route('/', methods=['POST'])
+@app1.route('/capture_intent', methods=['POST'])
 def capture_intent(trans_text):
     load_api()
     output = extract_information(trans_text)
