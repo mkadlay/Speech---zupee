@@ -1,0 +1,3 @@
+az login
+
+az containerapp up --resource-group Poc-MS --name web-aca-app --ingress external --target-port 50505 --source .
