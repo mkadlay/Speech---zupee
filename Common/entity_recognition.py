@@ -1,5 +1,5 @@
 import pandas as pd
-import speech_translation
+from speech_translation import *
 import string
 import openai
 import os
@@ -22,7 +22,9 @@ def load_api():
 # trans_text = "I want to play 5 player ludo game"
 # trans_text = "I want to play ludo game starting in half a minute"
 # trans_text = "I want to play a quick Ludo game two players one winner entry amount twenty rupees in one minute"
-trans_text = "I want to play Ludo's game"
+# trans_text = "I want to play Ludo's game"
+
+# trans_text = recognize_from_microphone()
 
 def classify_intent(trans_text):
     load_api()
@@ -80,23 +82,6 @@ def extract_information(text_with_json):
 
     return json_data
 
-text_with_json = classify_intent(trans_text)
-
-output = extract_information(text_with_json)
-print(output)
-
-api_text = "\
-{            'Intent' : 'Intent',\
-             'GameName' : 'Ludo',\
-             'Players' : null,\
-             '# winner':'2',\
-             'Entry Amount':null,\
-             'Type':'quick',\
-             'Wait time': '2'\
-             }\
-"
-api_text = extract_information(api_text)
-
 def find_null_keys(json_obj):
     null_keys = []
     data = json.loads(json_obj)
@@ -104,52 +89,3 @@ def find_null_keys(json_obj):
         if value is None:
             null_keys.append(key)
     return null_keys
-
-# Replace sample_json with your actual JSON object or provide the path to a JSON file
-null_keys = find_null_keys(api_text)
-
-# if null_keys:
-#     print(f"The following keys have null values: {', '.join(null_keys)}")
-# else:
-#     print("No keys with null values found.")
-    
-if null_keys:
-    text_to_zia = f"Please provide your preferred: {', '.join(null_keys)}"
-    reponse_from_zia(text_to_zia)
-
-res_text = "2 players 1.5 rs"
-
-def clasiify_response(trans_text):
-    load_api()
-    response = openai.ChatCompletion.create(
-        engine="MSZupeePoc", # The deployment name you chose when you deployed the GPT-3.5-Turbo or GPT-4 model.
-        messages=[
-            {"role": "system", "content": "Assistant is a large language model trained by OpenAI.\
-            Please provide a JSON structure that identifies a gamer's intent to play Ludo \
-            Intent Name: 'Start New Ludo Game'\
-            The following are the rules, if the extracted values don't follow the rules retun null for the parameter\
-            1. Number of players can either be 2 or 4\
-            Output JSON Format:\
-             {'Intent' : 'Intent',\
-             'GameName' : 'Name of the game',\
-             '# Players' : 'Number of players',\
-             '# winner':'Number of winner.',\
-             'Entry Amount':'Entry Amount',\
-             'Type':'Tournament type - is it regular or quick? If not defined return null',\
-             'Wait time':'Preferred wait time for the game'\
-             }"},
-            {"role": "user", "content": f"What is the intent for the following utterance -{trans_text}.\
-            Return an json object with curly braces of without any extra word or signs"}
-        ])
-    intent = response['choices'][0]['message']['content']
-    # print(intent)
-    return intent
-
-text_with_json = classify_intent(res_text)
-
-output = extract_information(text_with_json)
-print(output)
-
-
-
-
